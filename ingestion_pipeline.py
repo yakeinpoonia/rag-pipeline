@@ -36,11 +36,42 @@ def load_documents(docs_path="private_data"):
 
     return documents
 
+# Fucntion to split large .txt files into smaller chunk
+def split_documents(documents, chunk_size=800, chunk_overlap=0):
+    print("\nSplitting documents into chunks....\n")
+
+    # CharacterTextsplitter is a class
+    text_splitter = CharacterTextSplitter(
+        chunk_size = chunk_size,
+        chunk_overlap = chunk_overlap
+    )
+
+    # split_documents is a method inherited from TextSplitter
+    chunks = text_splitter.split_documents(documents)
+
+    if chunks:
+        for i, chunk in enumerate(chunks[:5]):
+            print(f"\n--- Chunk {i+1} ---")
+            print(f"Source: {chunk.metadata['source']}")
+            print(f"Length: {len(chunk.page_content)} characters")
+            print(f"Content:")
+            print(chunk.page_content)
+            print("-" * 90)
+
+        if len(chunks) > 5:
+            print(f"\n... and {len(chunks) - 5} more chunks")
+
+    return chunks
 
 
 
 def main():
+    # Loading documents from private database
     documents = load_documents(docs_path="private_data")
+
+    # Chunking large files
+    chunks = split_documents(documents)
+
 
 
 if __name__ == "__main__":
