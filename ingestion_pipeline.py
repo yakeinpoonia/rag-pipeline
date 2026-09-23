@@ -63,6 +63,25 @@ def split_documents(documents, chunk_size=800, chunk_overlap=0):
 
     return chunks
 
+# Function to create embeddings of chunks and storing them in Vector DB
+def create_vector_store(chunks, persist_directory="db/chrome_db"):
+    print("\nCreating embeddings and storing in ChromeDB....\n")
+
+    # Using ollama local model for embeddings
+    embedding_model = OllamaEmbeddings(model="nomic-embed-text")
+
+    # Create ChromeDB vector store
+    print("\n--- Creating vectore store ---\n")
+    vectorstore = Chroma.from_documents(
+        documents = chunks,
+        embedding = embedding_model,
+        persist_directory = persist_directory,
+        collection_metadata = {"hnsw:space": "cosine"} # By default chroma uses L2 (Euclidean) distance
+    )
+    print("\n--- Finished creating vector store ---")
+
+    print(f"Vector store created and saved to {persist_directory}")
+    return vectorstore
 
 
 def main():
@@ -71,6 +90,9 @@ def main():
 
     # Chunking large files
     chunks = split_documents(documents)
+
+    # Embedding and Storing in Vector DB
+    vectorstore = create_vector_store(chunks)
 
 
 
