@@ -42,6 +42,7 @@ def split_documents(documents, chunk_size=800, chunk_overlap=0):
 
     # CharacterTextsplitter is a class
     text_splitter = CharacterTextSplitter(
+        separator = ".",
         chunk_size = chunk_size,
         chunk_overlap = chunk_overlap
     )
